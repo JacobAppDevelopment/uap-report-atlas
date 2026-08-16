@@ -63,6 +63,7 @@
 
   // ---------- Log list ----------
   var logList = document.getElementById("logList");
+  var collapsedGroups = {}; // key -> true if collapsed; persists across re-renders
   function buildLog(){
     logList.innerHTML = "";
     var groups = [
@@ -74,10 +75,25 @@
       if (activeFilter!=="all" && activeFilter!==g.key) return;
       var items = CASES.filter(function(c){ return c.status===g.key; });
       if (!items.length) return;
-      var title = document.createElement("div");
+
+      var groupEl = document.createElement("div");
+      groupEl.className = "log-group" + (collapsedGroups[g.key] ? " collapsed" : "");
+
+      var title = document.createElement("button");
       title.className = "log-section-title";
-      title.textContent = g.label + " · " + items.length;
-      logList.appendChild(title);
+      title.setAttribute("aria-expanded", collapsedGroups[g.key] ? "false" : "true");
+      title.innerHTML = '<span class="chevron">&#9656;</span><span>' + g.label + " · " + items.length + "</span>";
+      title.addEventListener("click", function(){
+        collapsedGroups[g.key] = !collapsedGroups[g.key];
+        groupEl.classList.toggle("collapsed", !!collapsedGroups[g.key]);
+        title.setAttribute("aria-expanded", collapsedGroups[g.key] ? "false" : "true");
+      });
+      groupEl.appendChild(title);
+
+      var rows = document.createElement("div");
+      rows.className = "log-group-rows";
+      var rowsInner = document.createElement("div");
+      rowsInner.className = "log-group-rows-inner";
       items.forEach(function(c){
         var row = document.createElement("button");
         row.className = "case-row status-" + c.status;
@@ -86,8 +102,11 @@
           '<span class="sub">'+c.location+'</span></span>' +
           '<span class="date">'+c.date+'</span>';
         row.addEventListener("click", function(){ openSheet(c.id); });
-        logList.appendChild(row);
+        rowsInner.appendChild(row);
       });
+      rows.appendChild(rowsInner);
+      groupEl.appendChild(rows);
+      logList.appendChild(groupEl);
     });
   }
   buildLog();
