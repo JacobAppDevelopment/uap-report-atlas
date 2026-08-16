@@ -44,11 +44,11 @@ body{
 }
 
 header.site-header{
-  padding:22px 20px 18px;
+  padding:14px 20px 10px;
   border-bottom:1px solid var(--border);
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:3px;
   flex-shrink:0;
 }
 header.site-header .row{
@@ -78,15 +78,19 @@ h1{
   font-variant-numeric:tabular-nums;
 }
 .subhead{
-  font-size:12.5px;
+  font-size:11.5px;
   color:var(--ink-dim);
-  line-height:1.5;
+  line-height:1.4;
   max-width:68ch;
+  display:none;
+}
+@media (min-width:640px){
+  .subhead{ display:block; }
 }
 @media (min-width:900px){
-  header.site-header{ padding:32px 40px 24px; }
-  h1{ font-size:32px; }
-  .subhead{ font-size:13.5px; max-width:74ch; }
+  header.site-header{ padding:22px 40px 16px; }
+  h1{ font-size:28px; }
+  .subhead{ font-size:13px; max-width:74ch; }
 }
 
 .layout{
@@ -105,7 +109,9 @@ h1{
 
 .map-pane{
   position:relative;
-  height:380px;
+  height:min(62vh, 520px);
+  height:min(62svh, 520px);
+  min-height:320px;
   background:var(--panel);
   border-bottom:1px solid var(--border);
   overflow:hidden;
