@@ -42,7 +42,7 @@
 .prose{
   max-width:74ch;
 }
-.prose h2{
+.prose h2, .prose h3{
   font-family:'Oswald', sans-serif;
   font-weight:600;
   font-size:19px;
@@ -50,7 +50,20 @@
   margin:32px 0 10px;
   text-wrap:balance;
 }
-.prose h2:first-child{ margin-top:0; }
+.prose h2:first-child, .prose h3:first-child{ margin-top:0; }
+
+.section-title{
+  font-family:'Oswald', sans-serif;
+  font-weight:600;
+  font-size:26px;
+  color:var(--ink);
+  margin:0 0 6px;
+  text-wrap:balance;
+  padding-top:36px;
+  border-top:1px solid var(--border);
+}
+.section-title-wrap{ margin-top:8px; }
+.section-title + .subhead{ margin-bottom:20px; }
 .prose p{
   font-size:14px;
   line-height:1.65;
