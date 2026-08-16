@@ -1,0 +1,127 @@
+(function(){
+  "use strict";
+
+  var STATUS_LABEL = { unresolved:"Unresolved", explained:"Explained", uncorroborated:"Uncorroborated" };
+
+  document.getElementById("countBadge").textContent = CASES.length + " cases";
+
+  // ---------- Map ----------
+  var map = L.map("map", {
+    worldCopyJump:true,
+    minZoom:2,
+    zoomControl:true
+  }).setView([25, 10], 2.3);
+
+  // Esri's Dark Gray Canvas basemap is authored in English regardless of
+  // viewer locale (unlike OSM-derived tiles, which label places in their
+  // local language). Base layer (fills/water/roads) + Reference layer
+  // (country/place-name labels) are loaded separately and stacked.
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+    attribution:'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+    maxZoom:16
+  }).addTo(map);
+  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom:16,
+    pane:"shadowPane"
+  }).addTo(map);
+
+  var markerById = {};
+  CASES.forEach(function(c){
+    var icon = L.divIcon({
+      className:"",
+      html:'<div class="pin status-' + c.status + (c.precision==="approx" ? " approx" : "") + '"></div>',
+      iconSize:[16,16],
+      iconAnchor:[8,8]
+    });
+    var m = L.marker([c.lat, c.lon], { icon:icon, keyboard:true, alt:c.name }).addTo(map);
+    m.bindTooltip(c.name, { direction:"top", offset:[0,-6], opacity:0.95 });
+    m.on("click", function(){ openSheet(c.id); });
+    markerById[c.id] = m;
+  });
+
+  // ---------- Filters ----------
+  var filterBar = document.getElementById("filterBar");
+  var activeFilter = "all";
+  filterBar.addEventListener("click", function(e){
+    var btn = e.target.closest(".chip");
+    if (!btn) return;
+    activeFilter = btn.getAttribute("data-filter");
+    Array.prototype.forEach.call(filterBar.querySelectorAll(".chip"), function(c){
+      c.setAttribute("aria-pressed", c===btn ? "true" : "false");
+    });
+    applyFilter();
+  });
+
+  function applyFilter(){
+    CASES.forEach(function(c){
+      var show = activeFilter==="all" || c.status===activeFilter;
+      var el = markerById[c.id].getElement();
+      if (el) el.style.display = show ? "" : "none";
+    });
+    buildLog();
+  }
+
+  // ---------- Log list ----------
+  var logList = document.getElementById("logList");
+  function buildLog(){
+    logList.innerHTML = "";
+    var groups = [
+      { key:"unresolved", label:"Unresolved" },
+      { key:"explained", label:"Explained" },
+      { key:"uncorroborated", label:"Uncorroborated" }
+    ];
+    groups.forEach(function(g){
+      if (activeFilter!=="all" && activeFilter!==g.key) return;
+      var items = CASES.filter(function(c){ return c.status===g.key; });
+      if (!items.length) return;
+      var title = document.createElement("div");
+      title.className = "log-section-title";
+      title.textContent = g.label + " · " + items.length;
+      logList.appendChild(title);
+      items.forEach(function(c){
+        var row = document.createElement("button");
+        row.className = "case-row status-" + c.status;
+        row.innerHTML = '<span class="dot"></span>' +
+          '<span class="meta"><span class="name">'+c.name+'</span>' +
+          '<span class="sub">'+c.location+'</span></span>' +
+          '<span class="date">'+c.date+'</span>';
+        row.addEventListener("click", function(){ openSheet(c.id); });
+        logList.appendChild(row);
+      });
+    });
+  }
+  buildLog();
+
+  // ---------- Detail sheet ----------
+  var sheet = document.getElementById("sheet");
+  var backdrop = document.getElementById("sheetBackdrop");
+  var sheetClose = document.getElementById("sheetClose");
+
+  function openSheet(id){
+    var c = CASES.filter(function(x){ return x.id===id; })[0];
+    if (!c) return;
+    document.getElementById("sheetBadgeText").textContent = STATUS_LABEL[c.status];
+    document.getElementById("sheetBadge").querySelector(".dot").style.background = "var(--status-" + c.status + ")";
+    document.getElementById("sheetTitle").textContent = c.name;
+    document.getElementById("sheetLoc").textContent = c.location + (c.precision==="approx" ? " — approximate placement" : "");
+    document.getElementById("sheetDate").textContent = c.date;
+    document.getElementById("sheetAgency").textContent = c.agency;
+    document.getElementById("sheetSummary").textContent = c.summary;
+    document.getElementById("sheetSource").textContent = "Source: " + c.source;
+    sheet.classList.add("open");
+    backdrop.classList.add("open");
+    if (window.innerWidth >= 900){
+      map.flyTo([c.lat, c.lon], Math.max(map.getZoom(), 4), { duration:0.6 });
+    }
+  }
+  function closeSheet(){
+    sheet.classList.remove("open");
+    backdrop.classList.remove("open");
+  }
+  sheetClose.addEventListener("click", closeSheet);
+  backdrop.addEventListener("click", closeSheet);
+  document.addEventListener("keydown", function(e){ if (e.key==="Escape") closeSheet(); });
+
+  setTimeout(function(){ map.invalidateSize(); }, 80);
+  window.addEventListener("resize", function(){ map.invalidateSize(); });
+})();
