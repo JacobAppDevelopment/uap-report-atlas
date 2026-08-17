@@ -253,7 +253,17 @@
   var galleryGrid = document.getElementById("galleryGrid");
   var MEDIA_SHORT = { "photo":"Photo", "video-still":"Still", "illustration":"Illustration" };
 
-  CASES.filter(function(c){ return c.image; }).forEach(function(c){
+  // Held out of the collage: images that show a location, a representative
+  // aircraft type, or an example of the phenomenon rather than the reported
+  // object itself. Each still appears in its own case file, where the caption
+  // supplies the context a bare thumbnail can't.
+  var GALLERY_EXCLUDE = {
+    malmstrom:1, rendlesham:1, socorro:1, mantell:1, rb47:1, minot1968:1,
+    loring:1, tehran1976:1, belgium:1, aawsap:1, icbmclaims:1,
+    canaveralstarlink:1, satflare:1, radarmalfunction:1
+  };
+
+  CASES.filter(function(c){ return c.image && !GALLERY_EXCLUDE[c.id]; }).forEach(function(c){
     var tile = document.createElement("button");
     tile.className = "gallery-tile type-" + c.imageType;
     tile.setAttribute("aria-label", c.name + " — " + (MEDIA_LABEL[c.imageType] || ""));
