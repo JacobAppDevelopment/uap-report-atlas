@@ -1,6 +1,12 @@
 (function(){
   "use strict";
 
+  // Stop the browser from auto-restoring a previous scroll position on
+  // reload/revisit — that's what causes the page to briefly render at the
+  // top, then jump down to wherever it was last scrolled.
+  if ("scrollRestoration" in history) { history.scrollRestoration = "manual"; }
+  window.scrollTo(0, 0);
+
   var STATUS_LABEL = { unresolved:"Unresolved", explained:"Explained", uncorroborated:"Uncorroborated" };
 
   document.getElementById("countBadge").textContent = CASES.length + " cases";
