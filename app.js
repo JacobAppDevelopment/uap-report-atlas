@@ -2,9 +2,15 @@
   "use strict";
 
   // Stop the browser from auto-restoring a previous scroll position on
-  // reload/revisit — that's what causes the page to briefly render at the
-  // top, then jump down to wherever it was last scrolled.
+  // reload/revisit.
   if ("scrollRestoration" in history) { history.scrollRestoration = "manual"; }
+
+  // If the URL still has a leftover #about (or any) fragment from earlier
+  // navigation, the browser will auto-scroll to that element on every load —
+  // that's what causes the page to open at top then jump down. Strip it.
+  if (window.location.hash) {
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+  }
   window.scrollTo(0, 0);
 
   var STATUS_LABEL = { unresolved:"Unresolved", explained:"Explained", uncorroborated:"Uncorroborated" };
@@ -159,4 +165,18 @@
 
   setTimeout(function(){ map.invalidateSize(); }, 80);
   window.addEventListener("resize", function(){ map.invalidateSize(); });
+
+  // ---------- In-page anchor links ----------
+  // Scroll via JS instead of a real #hash, so the URL never ends up
+  // containing a fragment that would make the browser auto-scroll here
+  // again on the next reload.
+  Array.prototype.forEach.call(document.querySelectorAll('a[href^="#"]'), function(link){
+    link.addEventListener("click", function(e){
+      var targetId = link.getAttribute("href").slice(1);
+      var target = document.getElementById(targetId);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 })();
