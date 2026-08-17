@@ -345,6 +345,45 @@ html{ scroll-behavior:smooth; }
 
 .log{ padding:4px 12px 20px; flex:1; overflow-y:auto; min-height:120px; }
 .log.hidden{ display:none; }
+
+/* On desktop the sidebar is a fixed-height scrolling column, so the list is
+   already contained. On mobile the page just grows, which pushed the sections
+   below it a long way down — so cap the list into a scrollable preview with an
+   expand control. */
+.log-expand{ display:none; }
+@media (max-width:899px){
+  .log{ max-height:50vh; max-height:50svh; }
+  .log.expanded{ max-height:none; }
+
+  .log-expand{
+    position:relative;
+    display:block;
+    width:100%;
+    padding:11px 20px;
+    background:var(--panel);
+    border:none;
+    border-top:1px solid var(--border);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--ink-dim);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .log-expand:hover{ color:var(--ink); }
+  .log-expand:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
+  .log-expand[hidden]{ display:none; }
+
+  /* Fade above the button hints that the preview continues past the cut. */
+  .log-expand::before{
+    content:"";
+    position:absolute; left:0; right:0; bottom:100%;
+    height:30px;
+    background:linear-gradient(to top, var(--bg), transparent);
+    pointer-events:none;
+  }
+  .log.expanded ~ .log-expand::before{ display:none; }
+}
 .log-group{ border-bottom:1px solid transparent; }
 .log-section-title{
   width:100%;

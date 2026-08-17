@@ -133,11 +133,27 @@
   // ---------- Whole-list collapse ----------
   var logToggle = document.getElementById("logToggle");
   var logToggleLabel = document.getElementById("logToggleLabel");
+  var logExpand = document.getElementById("logExpand");
+
   logToggle.addEventListener("click", function(){
     var expanded = logToggle.getAttribute("aria-expanded") === "true";
     logToggle.setAttribute("aria-expanded", expanded ? "false" : "true");
     logList.classList.toggle("hidden", expanded);
     logToggleLabel.textContent = expanded ? "Show case list" : "Hide case list";
+    // Nothing to expand while the list is hidden.
+    logExpand.hidden = expanded;
+  });
+
+  // Mobile only (the button is display:none above 900px): lifts the height cap
+  // on the case list so the whole thing is readable in place.
+  logExpand.addEventListener("click", function(){
+    var nowExpanded = logList.classList.toggle("expanded");
+    logExpand.setAttribute("aria-expanded", nowExpanded ? "true" : "false");
+    logExpand.textContent = nowExpanded ? "Show less" : "Show full list";
+    if (!nowExpanded){
+      logList.scrollTop = 0;
+      logList.scrollIntoView({ behavior:"smooth", block:"nearest" });
+    }
   });
   var collapsedGroups = {}; // key -> true if collapsed; persists across re-renders
   function buildLog(){
