@@ -27,12 +27,27 @@ body{
 .page{
   max-width:1360px;
   margin:0 auto;
-  min-height:100vh;
   display:flex;
   flex-direction:column;
 }
 @media (min-width:900px){
-  .page{ min-height:0; margin:28px auto 48px; border-radius:16px; border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden; }
+  .page{ margin:28px auto 48px; border-radius:16px; border:1px solid var(--border); box-shadow:var(--shadow); overflow:hidden; }
+}
+
+/* .hero forces the header + map/list area to exactly one viewport's
+   height, so the map is always fully visible the instant the page opens,
+   with zero scrolling required, regardless of window/screen size. */
+.hero{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  min-height:100svh;
+}
+@media (min-width:900px){
+  .hero{
+    min-height:calc(100vh - 76px);
+    min-height:calc(100svh - 76px);
+  }
 }
 
 .eyebrow{
@@ -116,7 +131,7 @@ html{ scroll-behavior:smooth; }
 @media (min-width:900px){
   .layout{
     grid-template-columns:1fr 400px;
-    height:min(780px, 80vh);
+    height:auto;
   }
 }
 
