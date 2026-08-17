@@ -72,12 +72,58 @@
     applyFilter();
   });
 
+  // ---------- Search ----------
+  var searchInput = document.getElementById("caseSearch");
+  var searchClear = document.getElementById("searchClear");
+  var searchQuery = "";
+
+  function matchesSearch(c){
+    if (!searchQuery) return true;
+    var hay = (c.name + " " + c.location + " " + c.agency + " " +
+               c.date + " " + c.summary + " " + c.status).toLowerCase();
+    // Every whitespace-separated term must appear, so multi-word queries narrow.
+    return searchQuery.split(/\s+/).every(function(term){
+      return hay.indexOf(term) !== -1;
+    });
+  }
+
+  function isVisible(c){
+    return (activeFilter==="all" || c.status===activeFilter) && matchesSearch(c);
+  }
+
+  searchInput.addEventListener("input", function(){
+    searchQuery = searchInput.value.trim().toLowerCase();
+    searchClear.hidden = searchQuery === "";
+    applyFilter();
+  });
+  searchInput.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && searchInput.value){
+      e.stopPropagation();
+      clearSearch();
+    }
+  });
+  function clearSearch(){
+    searchInput.value = "";
+    searchQuery = "";
+    searchClear.hidden = true;
+    applyFilter();
+  }
+  searchClear.addEventListener("click", function(){
+    clearSearch();
+    searchInput.focus();
+  });
+
   function applyFilter(){
+    var shown = 0;
     CASES.forEach(function(c){
-      var show = activeFilter==="all" || c.status===activeFilter;
+      var show = isVisible(c);
+      if (show) shown++;
       var el = markerById[c.id].getElement();
       if (el) el.style.display = show ? "" : "none";
     });
+    document.getElementById("countBadge").textContent =
+      shown === CASES.length ? CASES.length + " cases"
+                             : shown + " of " + CASES.length;
     buildLog();
   }
 
@@ -101,10 +147,12 @@
       { key:"explained", label:"Explained" },
       { key:"uncorroborated", label:"Uncorroborated" }
     ];
+    var anyShown = false;
     groups.forEach(function(g){
       if (activeFilter!=="all" && activeFilter!==g.key) return;
-      var items = CASES.filter(function(c){ return c.status===g.key; });
+      var items = CASES.filter(function(c){ return c.status===g.key && matchesSearch(c); });
       if (!items.length) return;
+      anyShown = true;
 
       var groupEl = document.createElement("div");
       groupEl.className = "log-group" + (collapsedGroups[g.key] ? " collapsed" : "");
@@ -138,6 +186,15 @@
       groupEl.appendChild(rows);
       logList.appendChild(groupEl);
     });
+
+    if (!anyShown){
+      var empty = document.createElement("div");
+      empty.className = "log-empty";
+      empty.textContent = searchQuery
+        ? "No cases match “" + searchInput.value.trim() + "”."
+        : "No cases in this category.";
+      logList.appendChild(empty);
+    }
   }
   buildLog();
 

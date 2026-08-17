@@ -23,6 +23,12 @@
     <div class="eyebrow">Independent case atlas &middot; compiled from AARO reporting &amp; public records</div>
     <div class="row">
       <h1>UAP Report Atlas</h1>
+      <div class="legend" role="list" aria-label="Case status key">
+        <span class="legend-item" role="listitem"><span class="legend-swatch" style="background:var(--status-unresolved)"></span>Unresolved</span>
+        <span class="legend-item" role="listitem"><span class="legend-swatch" style="background:var(--status-explained)"></span>Explained</span>
+        <span class="legend-item" role="listitem"><span class="legend-swatch" style="background:var(--status-uncorroborated)"></span>Uncorroborated</span>
+        <span class="legend-item" role="listitem"><span class="legend-swatch ring"></span>Approximate region</span>
+      </div>
       <div class="header-actions">
         <span class="count-badge" id="countBadge">&mdash; cases</span>
         <a class="nav-link" href="#about">About AARO &darr;</a>
@@ -37,11 +43,9 @@
     </div>
 
     <aside class="side-pane">
-      <div class="legend">
-        <span class="legend-item"><span class="legend-swatch" style="background:var(--status-unresolved)"></span>Unresolved</span>
-        <span class="legend-item"><span class="legend-swatch" style="background:var(--status-explained)"></span>Explained</span>
-        <span class="legend-item"><span class="legend-swatch" style="background:var(--status-uncorroborated)"></span>Uncorroborated</span>
-        <span class="legend-item"><span class="legend-swatch ring"></span>Approximate region</span>
+      <div class="search-wrap">
+        <input type="search" id="caseSearch" class="case-search" placeholder="Search cases, places, agencies&hellip;" aria-label="Search cases" autocomplete="off" />
+        <button class="search-clear" id="searchClear" aria-label="Clear search" hidden>&times;</button>
       </div>
 
       <div class="filters" id="filterBar" role="group" aria-label="Filter cases">

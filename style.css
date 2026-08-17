@@ -68,9 +68,9 @@ header.site-header{
 }
 header.site-header .row{
   display:flex;
-  align-items:baseline;
+  align-items:center;
   justify-content:space-between;
-  gap:16px;
+  gap:12px 20px;
   flex-wrap:wrap;
 }
 h1{
@@ -224,14 +224,53 @@ html{ scroll-behavior:smooth; }
   .side-pane{ grid-column:2; grid-row:1; border-bottom:none; overflow-y:auto; }
 }
 
+/* Status key — sits in the header row, between the title and the case count. */
 .legend{
-  display:flex; flex-wrap:wrap; gap:10px 16px;
-  padding:12px 20px; border-bottom:1px solid var(--border);
-  font-size:10.5px; color:var(--ink-dim); flex-shrink:0;
+  display:flex; flex-wrap:wrap; gap:6px 14px;
+  font-size:10.5px; color:var(--ink-dim);
+  flex:1 1 auto; justify-content:flex-start;
 }
-.legend-item{ display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em; }
+@media (min-width:1100px){ .legend{ justify-content:center; } }
+.legend-item{ display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono', monospace; letter-spacing:0.02em; white-space:nowrap; }
 .legend-swatch{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 .legend-swatch.ring{ background:transparent; border:1px dashed var(--ink-faint); }
+
+/* Case search — occupies the sidebar slot the legend used to hold. */
+.search-wrap{
+  position:relative;
+  padding:12px 20px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.case-search{
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:7px 32px 7px 13px;
+  color:var(--ink);
+  font-family:'IBM Plex Sans', sans-serif;
+  font-size:12px;
+}
+.case-search::placeholder{ color:var(--ink-faint); }
+.case-search:focus{ outline:2px solid var(--focus); outline-offset:1px; border-color:var(--focus); }
+.case-search::-webkit-search-cancel-button{ display:none; }
+.search-clear{
+  position:absolute; right:29px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--ink-faint);
+  font-size:17px; line-height:1; cursor:pointer; padding:2px 5px;
+}
+.search-clear:hover{ color:var(--ink); }
+.search-clear:focus-visible{ outline:2px solid var(--focus); border-radius:50%; }
+.search-clear[hidden]{ display:none; }
+
+.log-empty{
+  padding:24px 10px;
+  text-align:center;
+  font-size:12px;
+  color:var(--ink-faint);
+  line-height:1.5;
+}
 
 .filters{
   display:flex; gap:8px; padding:12px 20px;
