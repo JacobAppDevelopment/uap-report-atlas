@@ -63,6 +63,16 @@
 
   // ---------- Log list ----------
   var logList = document.getElementById("logList");
+
+  // ---------- Whole-list collapse ----------
+  var logToggle = document.getElementById("logToggle");
+  var logToggleLabel = document.getElementById("logToggleLabel");
+  logToggle.addEventListener("click", function(){
+    var expanded = logToggle.getAttribute("aria-expanded") === "true";
+    logToggle.setAttribute("aria-expanded", expanded ? "false" : "true");
+    logList.classList.toggle("hidden", expanded);
+    logToggleLabel.textContent = expanded ? "Show case list" : "Hide case list";
+  });
   var collapsedGroups = {}; // key -> true if collapsed; persists across re-renders
   function buildLog(){
     logList.innerHTML = "";

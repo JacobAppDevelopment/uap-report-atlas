@@ -225,7 +225,35 @@ html{ scroll-behavior:smooth; }
 .chip[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); font-weight:600; }
 .chip:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
 
+.log-toggle{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  width:100%;
+  background:none;
+  border:none;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:10px 20px;
+  cursor:pointer;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:0.04em;
+  color:var(--ink-dim);
+  flex-shrink:0;
+}
+.log-toggle:hover{ color:var(--ink); background:var(--panel); }
+.log-toggle:focus-visible{ outline:2px solid var(--focus); outline-offset:-2px; }
+.log-toggle .chevron{
+  display:inline-block;
+  font-size:10px;
+  transition:transform 0.15s ease;
+  color:var(--ink-faint);
+}
+.log-toggle[aria-expanded="false"] .chevron{ transform:rotate(-90deg); }
+
 .log{ padding:4px 12px 20px; flex:1; overflow-y:auto; min-height:120px; }
+.log.hidden{ display:none; }
 .log-group{ border-bottom:1px solid transparent; }
 .log-section-title{
   width:100%;
