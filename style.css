@@ -45,8 +45,8 @@ body{
 }
 @media (min-width:900px){
   .hero{
-    min-height:calc(100vh - 76px);
-    min-height:calc(100svh - 76px);
+    height:calc(100vh - 76px);
+    height:calc(100svh - 76px);
   }
 }
 
@@ -131,7 +131,7 @@ html{ scroll-behavior:smooth; }
 @media (min-width:900px){
   .layout{
     grid-template-columns:1fr 400px;
-    height:auto;
+    height:100%;
   }
 }
 
