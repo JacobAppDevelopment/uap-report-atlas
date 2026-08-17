@@ -15,6 +15,14 @@
 
   var STATUS_LABEL = { unresolved:"Unresolved", explained:"Explained", uncorroborated:"Uncorroborated" };
 
+  // Image-type labels are deliberately explicit: a viewer should never mistake
+  // an artist's rendering or a representative stock photo for evidence.
+  var MEDIA_LABEL = {
+    "photo": "Photograph",
+    "video-still": "Video still — frame from released footage",
+    "illustration": "Illustration — not a photograph"
+  };
+
   document.getElementById("countBadge").textContent = CASES.length + " cases";
 
   // ---------- Map ----------
@@ -149,6 +157,21 @@
     document.getElementById("sheetAgency").textContent = c.agency;
     document.getElementById("sheetSummary").textContent = c.summary;
     document.getElementById("sheetSource").textContent = "Source: " + c.source;
+
+    var media = document.getElementById("sheetMedia");
+    if (c.image){
+      var img = document.getElementById("sheetImage");
+      img.src = c.image;
+      img.alt = c.imageCaption || c.name;
+      var tag = document.getElementById("sheetMediaTag");
+      tag.textContent = MEDIA_LABEL[c.imageType] || "";
+      tag.className = "media-tag type-" + c.imageType;
+      document.getElementById("sheetMediaCaption").textContent = c.imageCaption || "";
+      document.getElementById("sheetMediaCredit").textContent = c.imageCredit || "";
+      media.hidden = false;
+    } else {
+      media.hidden = true;
+    }
     sheet.classList.add("open");
     backdrop.classList.add("open");
     if (window.innerWidth >= 900){
