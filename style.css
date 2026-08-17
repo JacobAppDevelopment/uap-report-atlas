@@ -224,12 +224,17 @@ html{ scroll-behavior:smooth; }
   .side-pane{ grid-column:2; grid-row:1; border-bottom:none; overflow-y:auto; }
 }
 
-/* Status key — compact, at the top of the sidebar above the search field. */
+/* Status key — compact, at the top of the sidebar above the search field.
+   align-content:flex-start is load-bearing: this is a wrapping flex container,
+   and the default (stretch) pushes the wrapped lines apart to fill any spare
+   height, which left a large gap between rows on wide screens. Pinning the
+   lines to the start keeps them tight together at every width. */
 .legend{
-  display:flex; flex-wrap:wrap; gap:4px 12px;
+  display:flex; flex-wrap:wrap; align-content:flex-start;
+  gap:4px 12px;
   padding:9px 20px 8px;
   font-size:9px; color:var(--ink-faint);
-  flex-shrink:0;
+  flex:0 0 auto;
 }
 .legend-item{ display:flex; align-items:center; gap:5px; font-family:'IBM Plex Mono', monospace; letter-spacing:0.03em; white-space:nowrap; }
 .legend-swatch{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
