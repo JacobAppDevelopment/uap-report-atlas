@@ -11,6 +11,11 @@
   --status-unresolved:#ffb454;
   --status-explained:#5fd0c9;
   --status-uncorroborated:#a68cd9;
+  /* Dark inks for text sitting on each status colour — all three status
+     hues are light, so they need dark text to stay legible. */
+  --status-unresolved-ink:#2a1a00;
+  --status-explained-ink:#03211e;
+  --status-uncorroborated-ink:#1c1230;
   --focus:#ffd699;
   --shadow:0 24px 64px rgba(0,0,0,0.45);
 }
@@ -288,7 +293,27 @@ html{ scroll-behavior:smooth; }
   color:var(--ink-dim); background:var(--panel); border:1px solid var(--border);
   border-radius:20px; padding:6px 12px; white-space:nowrap; cursor:pointer; flex-shrink:0;
 }
+/* Selected filter takes the colour it represents in the status key, so the
+   chips, the map pins and the list dots all read as one system. "All cases"
+   keeps the neutral accent since it maps to no single status. */
 .chip[aria-pressed="true"]{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); font-weight:600; }
+.chip[data-filter="unresolved"][aria-pressed="true"]{
+  background:var(--status-unresolved); border-color:var(--status-unresolved); color:var(--status-unresolved-ink);
+}
+.chip[data-filter="explained"][aria-pressed="true"]{
+  background:var(--status-explained); border-color:var(--status-explained); color:var(--status-explained-ink);
+}
+.chip[data-filter="uncorroborated"][aria-pressed="true"]{
+  background:var(--status-uncorroborated); border-color:var(--status-uncorroborated); color:var(--status-uncorroborated-ink);
+}
+/* Unselected chips hint at their colour on hover. */
+.chip[data-filter="unresolved"]:hover{ border-color:color-mix(in srgb, var(--status-unresolved) 55%, transparent); color:var(--status-unresolved); }
+.chip[data-filter="explained"]:hover{ border-color:color-mix(in srgb, var(--status-explained) 55%, transparent); color:var(--status-explained); }
+.chip[data-filter="uncorroborated"]:hover{ border-color:color-mix(in srgb, var(--status-uncorroborated) 55%, transparent); color:var(--status-uncorroborated); }
+.chip[aria-pressed="true"]:hover{ color:inherit; }
+.chip[data-filter="unresolved"][aria-pressed="true"]:hover{ color:var(--status-unresolved-ink); }
+.chip[data-filter="explained"][aria-pressed="true"]:hover{ color:var(--status-explained-ink); }
+.chip[data-filter="uncorroborated"][aria-pressed="true"]:hover{ color:var(--status-uncorroborated-ink); }
 .chip:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
 
 .log-toggle{
