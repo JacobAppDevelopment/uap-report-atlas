@@ -246,6 +246,49 @@
   setTimeout(function(){ map.invalidateSize(); }, 80);
   window.addEventListener("resize", function(){ map.invalidateSize(); });
 
+  // ---------- Image collage ----------
+  // Tiles load small pre-generated thumbnails (~0.9MB total) rather than the
+  // full-size originals (~43MB), falling back to the original if a thumb is
+  // missing. Selecting a tile returns to the top and opens that case file.
+  var galleryGrid = document.getElementById("galleryGrid");
+  var MEDIA_SHORT = { "photo":"Photo", "video-still":"Still", "illustration":"Illustration" };
+
+  CASES.filter(function(c){ return c.image; }).forEach(function(c){
+    var tile = document.createElement("button");
+    tile.className = "gallery-tile type-" + c.imageType;
+    tile.setAttribute("aria-label", c.name + " — " + (MEDIA_LABEL[c.imageType] || ""));
+
+    var img = document.createElement("img");
+    img.src = "images/thumbs/" + c.id + ".jpg";
+    img.alt = c.imageCaption || c.name;
+    img.loading = "lazy";
+    img.addEventListener("error", function handleErr(){
+      img.removeEventListener("error", handleErr);
+      img.src = c.image;
+    });
+    tile.appendChild(img);
+
+    var meta = document.createElement("span");
+    meta.className = "gallery-meta";
+    var tag = document.createElement("span");
+    tag.className = "gallery-type";
+    tag.textContent = MEDIA_SHORT[c.imageType] || "";
+    var nm = document.createElement("span");
+    nm.className = "gallery-name";
+    nm.textContent = c.name;
+    meta.appendChild(tag);
+    meta.appendChild(nm);
+    tile.appendChild(meta);
+
+    tile.addEventListener("click", function(){
+      var top = document.getElementById("top");
+      if (top) top.scrollIntoView({ behavior:"smooth", block:"start" });
+      openSheet(c.id);
+    });
+
+    galleryGrid.appendChild(tile);
+  });
+
   // ---------- In-page anchor links ----------
   // Scroll via JS instead of a real #hash, so the URL never ends up
   // containing a fragment that would make the browser auto-scroll here
